@@ -2,7 +2,8 @@ var input = [
   '2x3x4',
   '1x1x10',
 `2x3x4
-1x1x10`,
+1x1x10
+7x1x4`,
   puzzleInput
 ]
 
@@ -48,9 +49,22 @@ var day2 = function() {
 var day2Part2 = function () {
 
   for (var i = 0; i < input.length; i++) {
+    var presents = input[i].split(/\s/)
+    var totalLengthFt = 0
+    for (var j = 0; j < presents.length; j++) {
+      var prst = presents[j].split('x')
+      var l = Number(prst[0])
+      var w = Number(prst[1])
+      var h = Number(prst[2])
+      var smallestPerim = 2 * min(l+w, w+h, h+l)
+      var cubFt = l*w*h
+      var ribbonLength = smallestPerim + cubFt
+      totalLengthFt += ribbonLength
+    }
+
     $('#part2').append(input[i])
       .append('<br>&emsp;')
-      .append()
+      .append(totalLengthFt)
       .append('<br>')
   }
 

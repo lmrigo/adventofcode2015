@@ -1,5 +1,6 @@
 var input = [
   '>',
+  '^v',
   '^>v<',
   '^v^v^v^v^v',
    puzzleInput
@@ -54,10 +55,35 @@ var day3 = function() {
 var day3Part2 = function () {
 
   for (var i = 0; i < input.length; i++) {
+    var path = input[i]
+    grid = []
+    var xs = 0
+    var ys = 0
+    visit(xs, ys)
+    var xr = 0
+    var yr = 0
+    visit(xr, yr)
+    var houses = 1
+    for (var j = 0; j < path.length; j++) {
+      var santa = j % 2 === 0
+      var dir = path.charAt(j)
+      if (dir === '^') {
+        santa ? ys-- : yr--
+      } else if (dir === '>') {
+        santa ? xs++ : xr++
+      } else if (dir === 'v') {
+        santa ? ys++ : yr++
+      } else { // <
+        santa ? xs-- : xr--
+      }
+      if (santa ? visit(xs, ys) : visit(xr, yr)) {
+        houses++
+      }
+    }
 
     $('#part2').append(input[i])
       .append('<br>&emsp;')
-      .append()
+      .append(houses)
       .append('<br>')
   }
 

@@ -31,9 +31,22 @@ var day1 = function() {
 var day1Part2 = function () {
 
   for (var i = 0; i < input.length; i++) {
+    var pos = 0
+    var floor = 0
+    for (var j = 0; j < input[i].length; j++) {
+      if (input[i].charAt(j) === '(') {
+        floor++
+      } else {
+        floor--
+      }
+      if (floor === -1) {
+        pos = j + 1
+        break
+      }
+    }
     $('#part2').append(input[i])
       .append('<br>&emsp;')
-      .append()
+      .append(pos)
       .append('<br>')
   }
 

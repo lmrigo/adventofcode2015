@@ -106,13 +106,76 @@ var day6 = function() {
   }
 }
 
+var toggle2 = function (tlX, tlY, bdX, bdY) {
+  for (var gi = tlX; gi <= bdX; gi++) {
+    for (var gj = tlY; gj <= bdY; gj++) {
+      grid[gi][gj] += 2
+    }
+  }
+}
+
+var turnOn2 = function (tlX, tlY, bdX, bdY) {
+  for (var gi = tlX; gi <= bdX; gi++) {
+    for (var gj = tlY; gj <= bdY; gj++) {
+      grid[gi][gj]++
+    }
+  }
+}
+
+var turnOff2 = function (tlX, tlY, bdX, bdY) {
+  for (var gi = tlX; gi <= bdX; gi++) {
+    for (var gj = tlY; gj <= bdY; gj++) {
+      if (grid[gi][gj] > 0) {
+        grid[gi][gj]--
+      }
+    }
+  }
+}
+
 var day6part2 = function() {
 
   for (var i = 0; i < input.length; i++) {
+    //reset grid
+    grid = []
+    for (var gi = 0; gi < 1000; gi++) {
+      grid[gi] = []
+      for (var gj = 0; gj < 1000; gj++) {
+        grid[gi][gj] = 0
+      }
+    }
+    var totalBrightness = 0
+
+    var instrs = input[i].split(/\n/)
+    for (var j = 0; j < instrs.length; j++) {
+      var instr = instrs[j].split(/\s/)
+      var action
+      var tl
+      var bd
+      if (instr[0] === 'toggle') {
+        action = toggle2
+        tl = instr[1].split(',')
+        bd = instr[3].split(',')
+      } else if (instr[1] === 'on') {
+        action = turnOn2
+        tl = instr[2].split(',')
+        bd = instr[4].split(',')
+      } else { //off
+        action = turnOff2
+        tl = instr[2].split(',')
+        bd = instr[4].split(',')
+      }
+      action(Number(tl[0]), Number(tl[1]), Number(bd[0]), Number(bd[1]))
+    }
+
+    totalBrightness = grid.reduce(function(accum1, row) {
+      return accum1 + row.reduce(function(accum2, val) {
+        return accum2 + val
+      }, 0)
+    }, 0)
 
     $('#day6part2').append(input[i])
       .append('<br>&emsp;')
-      .append()
+      .append(totalBrightness)
       .append('<br>')
   }
 

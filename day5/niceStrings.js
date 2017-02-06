@@ -9,6 +9,10 @@ aaa
 jchzalrnumimnmhp
 haegwjzuvuyypxyu
 dvszwmarrgswjxmb`,
+'qjhvhtzxzqqjkmpb',
+'xxyxx',
+'uurcxstgmygtbstg',
+'ieodomkazucvgmuy',
   puzzleInput
 ]
 
@@ -55,12 +59,50 @@ var day5 = function() {
   }
 }
 
+var hasTwoNonOverlappingPairs = function (s) {
+  var doublet = false
+  for (var i = 0; i < s.length-3; i++) {
+    var left = s.charAt(i)+s.charAt(i+1)
+    for (var j = i+2; j < s.length-1; j++) {
+      var right = s.charAt(j)+s.charAt(j+1)
+      if (left === right) {
+        doublet = true
+        break
+      }
+    }
+  }
+  return doublet
+}
+
+var hasTwiceLetterSpacedByOne = function (s) {
+  var doublet = false
+  for (var i = 0; i < s.length-2; i++) {
+    if (s.charAt(i) === s.charAt(i+2)) {
+      doublet = true
+      break
+    }
+  }
+  return doublet
+}
+
+var isNice2 = function (s) {
+  return hasTwoNonOverlappingPairs(s) && hasTwiceLetterSpacedByOne(s)
+}
+
 var day5part2 = function() {
+
   for (var i = 0; i < input.length; i++) {
+    var strings = input[i].split(/\n/)
+    var niceStrings = 0
+    for (var j = 0; j < strings.length; j++) {
+      if (isNice2(strings[j])) {
+        niceStrings++
+      }
+    }
 
     $('#day5part2').append(input[i])
       .append('<br>&emsp;')
-      .append()
+      .append(niceStrings)
       .append('<br>')
   }
 

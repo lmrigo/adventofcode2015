@@ -44,9 +44,17 @@ var day10 = function() {
 var day10part2 = function() {
 
   for (var i = 0; i < input.length; i++) {
+    var iterations = 50 // part 2
+    var look = input[i]
+    var say = ''
+    while (iterations--) {
+      say = lookAndSay(look)
+      // console.log(look, say)
+      look = say
+    }
     $('#day10part2').append(input[i])
       .append('<br>&emsp;')
-      .append()
+      .append(say.length)
       .append('<br>')
   }
 

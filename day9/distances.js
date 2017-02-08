@@ -101,9 +101,54 @@ var day9 = function() {
 var day9part2 = function() {
 
   for (var i = 0; i < input.length; i++) {
+
+    var pairs = []
+    var cities = [] // different cities
+
+    var routes = input[i].split(/\n/)
+    for (var j = 0; j < routes.length; j++) {
+      var route = routes[j].split(/\s/)
+      var a = route[0]
+      var b = route[2]
+      var dist = Number(route[4])
+      pairs.push([a, b, dist])
+      if (!cities.includes(a)) {
+        cities.push(a)
+      }
+      if (!cities.includes(b)) {
+        cities.push(b)
+      }
+    }
+    // console.log(cities, pairs)
+
+    var maxPathSum = -1
+
+    var initialPaths = []
+    for (var c = 0; c < cities.length; c++) {
+      initialPaths.push({'path': [cities[c]], 'sum': 0})
+    }
+    var nextPaths = initialPaths
+    while (nextPaths.length > 0) {
+      var path = nextPaths.shift()
+      if (path.sum <= maxPathSum) {
+        continue
+      }
+      if (path.path.length === cities.length) {
+        // var str = ''
+        // for (var x = 0; x < path.path.length; x++) {
+        //   str += path.path[x]
+        // }
+        if(path.sum > maxPathSum) {
+          maxPathSum = path.sum > maxPathSum ? path.sum : maxPathSum
+          // console.log(str, path.sum)
+        }
+      } else {
+        nextPaths.push(...generateNextPaths(path, pairs, cities))
+      }
+    }
     $('#day9part2').append(input[i])
       .append('<br>&emsp;')
-      .append()
+      .append(maxPathSum)
       .append('<br>')
   }
 

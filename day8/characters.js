@@ -48,10 +48,23 @@ var day8 = function() {
 var day8part2 = function() {
 
   for (var i = 0; i < input.length; i++) {
+    var code = 0
+    var encoded = 0
 
+    var strs = input[i].split(/\n/)
+    for (var j = 0; j < strs.length; j++) {
+      var cs = strs[j]
+      var es = cs
+      es = es.replace(/\\/g, '\\\\')
+      es = es.replace(/"/g, '\\"')
+      es = '"'+es+'"'
+      // console.log(cs, cs.length, es, es.length)
+      code += cs.length
+      encoded += es.length
+    }
     $('#day8part2').append(input[i])
       .append('<br>&emsp;')
-      .append()
+      .append(encoded - code)
       .append('<br>')
   }
 

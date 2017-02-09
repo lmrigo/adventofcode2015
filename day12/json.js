@@ -1,11 +1,11 @@
 var input = [
-  '[1,2,3]',
-  '{"a":2,"b":4}',
-  '[[[3]]]',
-  '{"a":{"b":4},"c":-1}',
-  '{"a":[-1,1]}',
-  '[-1,{"a":1}]',
-  '[]{}',
+  // '[1,2,3]',
+  // '{"a":2,"b":4}',
+  // '[[[3]]]',
+  // '{"a":{"b":4},"c":-1}',
+  // '{"a":[-1,1]}',
+  // '[-1,{"a":1}]',
+  // '[]{}',
   '[1,{"c":"red","b":2},3]',
   '{"d":"red","e":[1,2,3,4],"f":5}',
   '[1,"red",5]',
@@ -42,19 +42,21 @@ var buildTree = function (json) {
   while (c < json.length) {
     var ch = json.charAt(c)
     if (ch === '{') {
-      var node = ['o', '']
+      var node = ['o', '{']
       stack.push(node)
       top = node
     } else if (ch === '}') {
       var node = stack.pop()
+      node[1] += '}'
       var top = stack[stack.length-1]
       top.push(node)
     } else if (ch === '[') {
-      var node = ['a', '']
+      var node = ['a', '[']
       stack.push(node)
       top = node
     } else if (ch === ']') {
       var node = stack.pop()
+      node[1] += ']'
       var top = stack[stack.length-1]
       top.push(node)
     } else {
@@ -111,7 +113,7 @@ var day12part2 = function() {
       }, 0)
     }
 
-    // 11782053 too high
+    // 11782053, 1023055, 354775 too high
     $('#day12part2').append(input[i])
       .append('<br>&emsp;')
       .append(sum)
@@ -122,7 +124,7 @@ var day12part2 = function() {
 
 $(function (){
   $('#main').append('<div id="day12"><h2>day #12</h2></div>')
-  day12()
+  // day12()
   $('#main').append('<br><div id="day12part2"><h2>day #12 part 2</h2></div>')
   day12part2()
   $('#main').append('<br>')

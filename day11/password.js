@@ -36,7 +36,8 @@ var hasIncreasingTriplet = function (s) {
     var c1 = s.charAt(i+1)
     var c2 = s.charAt(i+2)
     if (nextLetter(c0) === c1
-      && nextLetter(c1) === c2) {
+      && nextLetter(c1) === c2
+      && c1 !== 'a' && c2 !== 'a') { // wrap around not allowed
       triplet = true
       break
     }
@@ -91,12 +92,13 @@ var day11 = function() {
 
 var day11part2 = function() {
 
-  for (var i = 0; i < input.length; i++) {
-    $('#day11part2').append(input[i])
-      .append('<br>&emsp;')
-      .append()
-      .append('<br>')
-  }
+  var input2 = 'vzbxxyzz' // part 1 solution, part 2 input
+  var password = increment(input2)
+  while (!isNice(password)) password = increment(password)
+  $('#day11part2').append(input2)
+    .append('<br>&emsp;')
+    .append(password)
+    .append('<br>')
 
 }
 

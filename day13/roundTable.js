@@ -119,9 +119,71 @@ var day13part2 = function() {
 
 
   for (var i = 0; i < input.length; i++) {
+    var lines = input[i].split(/\n/)
+    var people = []
+    var pairs = []
+    for (var l = 0; l < lines.length; l++) {
+      var line = lines[l].split(/\s/)
+      var pair = []
+      pair[0] = line[0]
+      pair[1] = line[10].replace('.', '')
+      pair[2] = Number(line[3]) * (line[2] === 'gain' ? 1 : -1)
+      pairs.push(pair)
+      if (!people.includes(pair[0])) {
+        people.push(pair[0])
+      }
+      if (!people.includes(pair[1])) {
+        people.push(pair[1])
+      }
+    }
+    // part 2: add myself in the table
+    var me = 'Lucas'
+    for (var p = 0; p < people.length; p++) {
+      var pair = []
+      pair[0] = me
+      pair[1] = people[p]
+      pair[2] = 0
+      pairs.push(pair)
+      var pair2 = []
+      pair2[0] = people[p]
+      pair2[1] = me
+      pair2[2] = 0
+      pairs.push(pair2)
+    }
+    people.push(me)
+    // console.log(people, pairs)
+
+    var maxTableSum = Number.MIN_SAFE_INTEGER
+
+    var initialTables = []
+    for (var p = 0; p < people.length; p++) {
+      initialTables.push({'table': [people[p]], 'sum': 0})
+    }
+    var nextTables = initialTables
+    while (nextTables.length > 0) {
+      var table = nextTables.pop()
+      // if (table.sum <= maxTableSum) {
+      //   continue
+      // }
+      if (table.table.length === people.length) {
+        // sum the wraparound
+        table.sum += getEdge(table.table[table.table.length-1], table.table[0], pairs)
+        var str = ''
+        for (var x = 0; x < table.table.length; x++) {
+          str += table.table[x]
+        }
+        // console.log(str, table.sum)
+        if(table.sum > maxTableSum) {
+          maxTableSum = table.sum > maxTableSum ? table.sum : maxTableSum
+          // console.log(str, table.sum)
+        }
+      } else {
+        nextTables.push(...generateNextTables(table, pairs, people))
+      }
+    }
     $('#day13part2').append(input[i])
       .append('<br>&emsp;')
-      .append()
+      .append(maxTableSum)
       .append('<br>')
   }
 

@@ -1,11 +1,11 @@
 var input = [
-  // '[1,2,3]',
-  // '{"a":2,"b":4}',
-  // '[[[3]]]',
-  // '{"a":{"b":4},"c":-1}',
-  // '{"a":[-1,1]}',
-  // '[-1,{"a":1}]',
-  // '[]{}',
+  '[1,2,3]',
+  '{"a":2,"b":4}',
+  '[[[3]]]',
+  '{"a":{"b":4},"c":-1}',
+  '{"a":[-1,1]}',
+  '[-1,{"a":1}]',
+  '[]{}',
   '[1,{"c":"red","b":2},3]',
   '{"d":"red","e":[1,2,3,4],"f":5}',
   '[1,"red",5]',
@@ -99,7 +99,7 @@ var removeReds = function (n) {
 var day12part2 = function() {
 
 
-  for (var i = 0; i < input.length; i++) {
+  for (var i = 7; i < input.length; i++) {
 
     var tree = input[i]
     tree = buildTree(tree)
@@ -124,7 +124,7 @@ var day12part2 = function() {
 
 $(function (){
   $('#main').append('<div id="day12"><h2>day #12</h2></div>')
-  // day12()
+  day12()
   $('#main').append('<br><div id="day12part2"><h2>day #12 part 2</h2></div>')
   day12part2()
   $('#main').append('<br>')

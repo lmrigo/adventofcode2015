@@ -3,7 +3,7 @@ var puzzleInput =
 Sprinkles: capacity -3, durability 3, flavor 0, texture 0, calories 9
 Candy: capacity -1, durability 0, flavor 4, texture 0, calories 1
 Chocolate: capacity 0, durability 0, flavor -2, texture 2, calories 8`
-// 21 5 31 43
+// 21 5 31 43 // 117936
 
 var input = [
 // 0             1       2        3     4     5   6   7      8   9       10
@@ -50,11 +50,11 @@ var day15 = function() {
       var teaspoons = nextSpoons.pop()
       if (teaspoons.score > maxScore) {
         maxScore = teaspoons.score
-        console.log(teaspoons)
+        // console.log(teaspoons)
       }
-      if (Math.random()*100 > 99) {
-        console.log(nextSpoons.length, teaspoons, maxScore)
-      }
+      // if (Math.random()*100 > 99) {
+      //   console.log(nextSpoons.length, teaspoons, maxScore)
+      // }
       nextSpoons.push(...nextCombos(ingredients, teaspoons))
     }
 
@@ -70,13 +70,16 @@ var score = function(ingredients, teaspoons) {
   var durability = 0
   var flavor = 0
   var texture = 0
+  var calories = 0
   $.each(ingredients, function(idx, val) {
     capacity += teaspoons[val.name] * val.capacity
     durability += teaspoons[val.name] * val.durability
     flavor += teaspoons[val.name] * val.flavor
     texture += teaspoons[val.name] * val.texture
+    calories += teaspoons[val.name] * val.calories
   })
-  if (capacity < 0 || durability < 0 || flavor < 0 || texture < 0) {
+  if (calories !== 500 //part 2
+    || capacity < 0 || durability < 0 || flavor < 0 || texture < 0) {
     return 0
   } else {
     return capacity * durability * flavor * texture
@@ -129,10 +132,52 @@ var day15part2 = function() {
 
 
   for (var i = 0; i < input.length; i++) {
+    var ingredients = []
+
+    var inLines = input[i].split(/\n/)
+    for (var j = 0; j < inLines.length; j++) {
+      var ing = inLines[j].split(/\s/)
+      var ingredient = {
+        name: ing[0].replace(':',''),
+        capacity: Number(ing[2].replace(',','')),
+        durability: Number(ing[4].replace(',','')),
+        flavor: Number(ing[6].replace(',','')),
+        texture: Number(ing[8].replace(',','')),
+        calories: Number(ing[10])
+      }
+      ingredients.push(ingredient)
+    }
+    // console.log(ingredients)
+
+    var initialSpoons = {}
+    for (var j = 0; j < ingredients.length; j++) {
+      initialSpoons[ingredients[j].name] = 0
+    }
+
+    // initialSpoons.Butterscotch = 44
+    // initialSpoons.Cinnamon = 56
+    initialSpoons[ingredients[0].name] = 100
+    initialSpoons.score = score(ingredients, initialSpoons)
+
+    previousCombos = []
+    var maxScore = Number.MIN_SAFE_INTEGER
+    var nextSpoons = [initialSpoons]
+    while (nextSpoons.length > 0) {
+      // var teaspoons = nextSpoons.shift()
+      var teaspoons = nextSpoons.pop()
+      if (teaspoons.score > maxScore) {
+        maxScore = teaspoons.score
+        // console.log(teaspoons)
+      }
+      // if (Math.random()*100 > 99) {
+      //   console.log(nextSpoons.length, teaspoons, maxScore)
+      // }
+      nextSpoons.push(...nextCombos(ingredients, teaspoons))
+    }
 
     $('#day15part2').append(input[i])
       .append('<br>&emsp;')
-      .append()
+      .append(maxScore)
       .append('<br>')
   }
 

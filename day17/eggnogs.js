@@ -27,8 +27,6 @@ var day17 = function() {
     // start with each input container as an initial state
     var initialCombos = []
     for (var c = 0; c < containers.length; c++) {
-      // var remCons = containers.slice()
-      // remCons.splice(c, 1)
       var remCons = containers.slice(c+1)
       initialCombos.push({'combo': [containers[c]], 'sum': containers[c], 'remContainers': remCons})
     }
@@ -42,18 +40,7 @@ var day17 = function() {
         continue
       } else if (combo.sum === liters) {
         // when the state is complete, store it
-        var newState = true
-        var b = combo.combo//.sort()
-        // for (var cs = 0; cs < completeStates.length; cs++) {
-        //   var a = completeStates[cs]
-        //   if (compareArray(a, b)) {
-        //     newState = false
-        //     break
-        //   }
-        // }
-        if (newState) {
-          completeStates.push(b)
-        }
+        completeStates.push(combo.combo)
       } else {
         nextCombos.push(...generateNextCombos(combo))
       }
@@ -74,7 +61,6 @@ var generateNextCombos = function(combo) {
   var newCombos = []
   $.each(combo.remContainers, function(contIdx, cont) {
     var newCb = copyCombo(combo)
-    // var nextCont = newCb.remContainers.splice(contIdx, 1)[0]
     newCb.remContainers = newCb.remContainers.slice(contIdx)
     var nextCont = newCb.remContainers.splice(0, 1)[0]
     newCb.combo.push(nextCont)
@@ -93,28 +79,60 @@ var copyCombo = function (original) {
   return copy
 }
 
-var compareArray = function (a, b) {
-  var equal = false
-  if (a.length === b.length) {
-    equal = true
-    for (var ab = 0; ab < a.length; ab++) {
-      if (a[ab] !== b[ab]) {
-        equal = false
-        break
-      }
-    }
-  }
-  return equal
-}
-
 var day17part2 = function() {
 
 
   for (var i = 0; i < input.length; i++) {
+    var liters = i === 0 ? 25 : 150
+
+    var containers = input[i].split(/\n/)
+    $.each(containers, function(idx, con) {
+      containers[idx] = Number(con)
+    })
+    containers.sort(function (a,b) {
+      return a - b
+    })
+    // console.log(containers)
+
+    // store complete states so they don't repeat
+    var completeStates = []
+    // start with each input container as an initial state
+    var initialCombos = []
+    for (var c = 0; c < containers.length; c++) {
+      var remCons = containers.slice(c+1)
+      initialCombos.push({'combo': [containers[c]], 'sum': containers[c], 'remContainers': remCons})
+    }
+    // console.log(initialCombos)
+
+    // for each state, generate new (unused containers #) states until the state is complete
+    var nextCombos = initialCombos
+    while (nextCombos.length > 0) {
+      var combo = nextCombos.shift()
+      if (combo.sum > liters) {
+        continue
+      } else if (combo.sum === liters) {
+        // when the state is complete, store it
+        completeStates.push(combo.combo)
+      } else {
+        nextCombos.push(...generateNextCombos(combo))
+      }
+    }
+
+    // once all combos are done, find the min num of containers combos
+    var minContsLength = completeStates.reduce(function(accum, state) {
+      return accum < state.length ? accum : state.length
+    }, Number.MAX_SAFE_INTEGER)
+    // console.log(minContsLength)
+    var containersMinCombos = 0
+    $.each(completeStates, function(idx, state) {
+      if (state.length === minContsLength) {
+        containersMinCombos++
+      }
+    })
 
     $('#day17part2').append(input[i])
       .append('<br>&emsp;')
-      .append()
+      .append(containersMinCombos)
       .append('<br>')
   }
 

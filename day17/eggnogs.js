@@ -17,21 +17,94 @@ var day17 = function() {
     $.each(containers, function(idx, con) {
       containers[idx] = Number(con)
     })
+    containers.sort(function (a,b) {
+      return a - b
+    })
     // console.log(containers)
 
     // store complete states so they don't repeat
     var completeStates = []
     // start with each input container as an initial state
-    // for each state, generate new (unused containers #) states until the state is complete
-    // when the state is complete, store it
-    // once all combos are done, solution is completeStates.length
+    var initialCombos = []
+    for (var c = 0; c < containers.length; c++) {
+      // var remCons = containers.slice()
+      // remCons.splice(c, 1)
+      var remCons = containers.slice(c+1)
+      initialCombos.push({'combo': [containers[c]], 'sum': containers[c], 'remContainers': remCons})
+    }
+    // console.log(initialCombos)
 
+    // for each state, generate new (unused containers #) states until the state is complete
+    var nextCombos = initialCombos
+    while (nextCombos.length > 0) {
+      var combo = nextCombos.shift()
+      if (combo.sum > liters) {
+        continue
+      } else if (combo.sum === liters) {
+        // when the state is complete, store it
+        var newState = true
+        var b = combo.combo//.sort()
+        // for (var cs = 0; cs < completeStates.length; cs++) {
+        //   var a = completeStates[cs]
+        //   if (compareArray(a, b)) {
+        //     newState = false
+        //     break
+        //   }
+        // }
+        if (newState) {
+          completeStates.push(b)
+        }
+      } else {
+        nextCombos.push(...generateNextCombos(combo))
+      }
+    }
+
+    // once all combos are done, solution is completeStates.length
     var containersCombos = completeStates.length
+    // console.log(completeStates)
+
     $('#day17').append(input[i])
       .append('<br>&emsp;')
       .append(containersCombos)
       .append('<br>')
   }
+}
+
+var generateNextCombos = function(combo) {
+  var newCombos = []
+  $.each(combo.remContainers, function(contIdx, cont) {
+    var newCb = copyCombo(combo)
+    // var nextCont = newCb.remContainers.splice(contIdx, 1)[0]
+    newCb.remContainers = newCb.remContainers.slice(contIdx)
+    var nextCont = newCb.remContainers.splice(0, 1)[0]
+    newCb.combo.push(nextCont)
+    newCb.sum += nextCont
+    newCombos.push(newCb)
+  })
+  return newCombos
+}
+
+var copyCombo = function (original) {
+  var copy = {
+    'combo': original.combo.slice(),
+    'sum': original.sum,
+    'remContainers': original.remContainers.slice()
+  }
+  return copy
+}
+
+var compareArray = function (a, b) {
+  var equal = false
+  if (a.length === b.length) {
+    equal = true
+    for (var ab = 0; ab < a.length; ab++) {
+      if (a[ab] !== b[ab]) {
+        equal = false
+        break
+      }
+    }
+  }
+  return equal
 }
 
 var day17part2 = function() {

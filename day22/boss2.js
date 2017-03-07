@@ -27,7 +27,7 @@ var Player = function (hp, mana, ar, manaSpent) {
 }
 
 var clonePlayer = function (p) {
-  var cP = new Player(p.hp, p.mana, p.ar, p.manaSpent)
+  var cP = new Player(p.hp, p.mana, 0, p.manaSpent)
   $.each(p.effects, function(eidx, effect) {
     cP.effects.push({
       name: effect.name,
@@ -48,7 +48,6 @@ var cloneBoss = function (base) {
 }
 
 var applyEffects = function(p, b) {
-  p.ar = 0
   // spell effects
   $.each(p.effects, function(eidx, eff) {
     if (eff.ar) {
@@ -66,12 +65,15 @@ var applyEffects = function(p, b) {
   })
 }
 
-var generateStates = function (state) {
+var generateStates = function (state, part2) {
   var newStates = []
   if (state.playerTurn) {
     $.each(spells, function (spidx, spell) {
       var newPlayer = clonePlayer(state.player)
       var newBoss = cloneBoss(state.boss)
+      if (part2) { // part 2 specific
+        newPlayer.hp--
+      }
       applyEffects(newPlayer, newBoss)
       if (newPlayer.effects.find(function(ef) {
         return ef.name === spell.name
@@ -97,16 +99,21 @@ var generateStates = function (state) {
             newPlayer.hp += spell.heal
           }
         }
-        newStates.push({'player': newPlayer, 'boss': newBoss, 'playerTurn': !state.playerTurn})
+        var newHistory = state.history + ' P' + spell.name
+        newStates.push({'player': newPlayer, 'boss': newBoss, 'playerTurn': !state.playerTurn, history: newHistory})
       }
     })
   } else {
     var newPlayer = clonePlayer(state.player)
     var newBoss = cloneBoss(state.boss)
     applyEffects(newPlayer, newBoss)
-    var damage = newBoss.dmg - newPlayer.ar
-    newPlayer.hp -= damage > 1 ? damage : 1
-    newStates.push({'player': newPlayer, 'boss': newBoss, 'playerTurn': !state.playerTurn})
+    var damage = 0
+    if (newBoss.hp > 0) {
+      damage = newBoss.dmg - newPlayer.ar
+      newPlayer.hp -= damage > 1 ? damage : 1
+    }
+    var newHistory = state.history + ' B' + damage
+    newStates.push({'player': newPlayer, 'boss': newBoss, 'playerTurn': !state.playerTurn, history: newHistory})
   }
   return newStates
 }
@@ -136,9 +143,9 @@ var day22 = function() {
     while (nextStates.length > 0) {
       // var state = nextStates.shift()
       var state = nextStates.pop()
-      if (counter++ % 10000 === 0) {
-        console.log(nextStates.length, state.player, state.boss)
-      }
+      // if (counter++ % 10000 === 0) {
+      //   console.log(nextStates.length, state.player, state.boss)
+      // }
       if (lowest <= state.player.manaSpent) {
         continue
       } else if (state.player.hp <= 0) { // lose
@@ -146,7 +153,7 @@ var day22 = function() {
       } else if (state.boss.hp <= 0) { // win
         if (state.player.manaSpent < lowest) {
           lowest =  state.player.manaSpent
-          console.log(state.player, state.boss)
+          // console.log(state.player, state.boss)
         }
       } else {
         nextStates.push(...generateStates(state))
@@ -163,9 +170,48 @@ var day22 = function() {
 var day22part2 = function() {
   for (var i = 0; i < input.length; i++) {
 
+    var basePlayer
+    if (i < 2) { // examples
+      basePlayer = new Player(10, 250, 0, 0)
+    } else { // puzzle
+      basePlayer = new Player(50, 500, 0, 0)
+    }
+
+    var inputs = input[i].split(/\n/)
+    var baseBoss = {
+      hp: Number(inputs[0].split(/\s/)[2]),
+      dmg: Number(inputs[1].split(/\s/)[1])
+    }
+
+    var lowest = Number.MAX_SAFE_INTEGER
+
+    var initialState = {'player': basePlayer, 'boss': baseBoss, 'playerTurn': true, history: ''}
+    var nextStates = [initialState]
+    var counter = 0
+    while (nextStates.length > 0) {
+      // var state = nextStates.pop()
+      var state = nextStates.shift()
+      // if (counter++ % 10000 === 0) {
+      //   console.log(nextStates.length, state.player.hp , state.player.manaSpent, state.boss.hp, state.history)
+      // }
+      if (lowest <= state.player.manaSpent) {
+        continue
+      } else if (state.player.hp <= 0) { // lose
+        continue
+      } else if (state.boss.hp <= 0) { // win
+        if (state.player.manaSpent < lowest) {
+          lowest =  state.player.manaSpent
+          // console.log(state.player, state.boss)
+        }
+      } else {
+        nextStates.push(...generateStates(state, true))
+      }
+    }
+
+    // probably 1937
     $('#day22part2').append(input[i])
       .append('<br>&emsp;')
-      .append()
+      .append(lowest)
       .append('<br>')
   }
 }

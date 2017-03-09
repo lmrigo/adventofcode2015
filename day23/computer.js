@@ -6,10 +6,10 @@ inc a`,
   puzzleInput
 ]
 
-var Computer = function () {
+var Computer = function (a = 0, b = 0) {
   this.pc = 0
-  this.a = 0
-  this.b = 0
+  this.a = a
+  this.b = b
   this.hlf = function (r) {
     this[r] = this[r] >> 1
     this.pc++
@@ -71,7 +71,7 @@ var day23 = function() {
       var instr = program[com.pc]
       com[instr.fun](instr.p1, instr.p2)
     }
-    console.log(com)
+    // console.log(com)
 
     $('#day23').append(input[i])
       .append('<br>&emsp;')
@@ -82,9 +82,38 @@ var day23 = function() {
 
 var day23part2 = function() {
   for (var i = 0; i < input.length; i++) {
+
+    var com = new Computer(1)
+
+    var program = []
+    var inputInstrs = input[i].split(/\n/)
+    $.each(inputInstrs, function(idx, val) {
+      var instr = val.split(/\s/)
+      var fun = instr[0]
+      var p1 = instr[1]
+      var p2
+      if (fun === 'jmp') {
+        p1 = Number(instr[1])
+      } else if (fun.startsWith('j')) {
+        p1 = instr[1].replace(',','')
+        p2 = Number(instr[2])
+      }
+      program.push({
+        fun: fun,
+        p1: p1,
+        p2: p2
+      })
+    })
+    // console.log(program)
+    while (com.pc < program.length) {
+      var instr = program[com.pc]
+      com[instr.fun](instr.p1, instr.p2)
+    }
+    // console.log(com)
+
     $('#day23part2').append(input[i])
       .append('<br>&emsp;')
-      .append()
+      .append(com.b)
       .append('<br>')
   }
 }

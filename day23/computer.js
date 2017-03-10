@@ -11,7 +11,7 @@ var Computer = function (a = 0, b = 0) {
   this.a = a
   this.b = b
   this.hlf = function (r) {
-    this[r] = this[r] >> 1
+    this[r] = this[r] >>> 1
     this.pc++
   }
   this.tpl = function (r) {
@@ -105,9 +105,13 @@ var day23part2 = function() {
       })
     })
     // console.log(program)
-    while (com.pc < program.length) {
+    while (com.pc < program.length && --timeout) {
       var instr = program[com.pc]
       com[instr.fun](instr.p1, instr.p2)
+      // if (com.a < 0) {
+      //   console.log(com, instr)
+      //   break
+      // }
     }
     // console.log(com)
 

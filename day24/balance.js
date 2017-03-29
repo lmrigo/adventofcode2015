@@ -237,11 +237,79 @@ var day24 = function() {
 
 var day24part2 = function() {
   for (var i = 0; i < input.length; i++) {
+    ht.root = new Node(0, [], 0)
+
+    var inputs = input[i].split(/\n/)
+    weights = []
+    for (var j = 0; j < inputs.length; j++) {
+      weights.push(Number(inputs[j]))
+    }
+    var numWeights = weights.length
+    // console.log(numWeights)
+    // 10 29
+    var totalWeight = weights.reduce(function(acc, val) {
+      return acc + val
+    })
+    // console.log(totalWeight)
+    // 60, 1536
+    var fourthWeight = totalWeight / 4
+    // console.log(fourthWeight)
+    // 15, 384
+
+    // weights.reverse(s) // goes slower reversed as the algorithm "pops". If it "shifted" it would be better.
+
+    var finalGroups = []
+    var minLength = 1000
+    var initial = {'wrem': fourthWeight, 'lst': []}
+    var queue = [initial]
+    // var counter = 1, treeCounter = 0
+    while (queue.length > 0) {
+      // var grp = queue.shift()
+      var grp = queue.pop()
+      if (grp.lst.length < minLength) {
+        $.each(weights, (idx, w) => {
+          if (!grp.lst.includes(w)) {
+            // if ((counter++ % 100000000) === 0) {
+            //   counter = 1
+            //   console.log(grp.lst.join(','))
+            // }
+            var newGrp = {'wrem': (grp.wrem - w), 'lst': []}
+            if (newGrp.wrem >= 0) {
+              newGrp.lst.push(...grp.lst)
+              newGrp.lst.insertSorted(w)
+              if (newGrp.wrem === 0 && newGrp.lst.length <= minLength) {
+                if (newGrp.lst.length < minLength) {
+                  minLength = newGrp.lst.length
+                }
+                if (!ht.includes(ht.root, newGrp.lst, 0)) {
+                  // findTheOther2(newGrp.lst, fourthWeight)
+                  finalGroups.push(newGrp.lst.slice())
+                  ht.insert(ht.root, newGrp.lst)
+                  // if (treeCounter++ % 100 === 0) {
+                  //   console.log(ht.toString())
+                  // }
+                }
+              } else {
+                queue.push(newGrp)
+              }
+            }
+          }
+        })
+      }
+    }
+
+    var shorts = finalGroups.filter((val) => {
+      return val.length <= minLength
+    })
+    var smallestQE = shorts.reduce((acc, val) => {
+      return quantumEntanglement(acc) < quantumEntanglement(val) ? acc : val
+    })
+    console.log(smallestQE, quantumEntanglement(smallestQE))
 
 
     $('#day24part2').append(input[i])
       .append('<br>&emsp;')
-      .append()
+      .append(quantumEntanglement(smallestQE))
       .append('<br>')
   }
 }

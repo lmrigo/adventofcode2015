@@ -23,6 +23,7 @@
 
 var puzzleInput = 'To continue, please consult the code grid in the manual.  Enter the code at row 2947, column 3029.'
 var input = [
+'To continue, please consult the code grid in the manual.  Enter the code at row 5, column 1.', // 27995004
 'To continue, please consult the code grid in the manual.  Enter the code at row 6, column 6.', // 27995004
   puzzleInput
 ]
@@ -53,15 +54,20 @@ var day25 = function() {
       }
       n++
     }
-    console.log(r,c,n)
+    // console.log(r,c,n)
+    // 5, 1 = 11
     // 6, 6 = 61
     // 2947, 3029 = 17850354
 
+    var code = 20151125 // initial number provided by the puzzle
     // calculate the nth number
+    while (--n) {
+      code = nextNumber(code)
+    }
 
     $('#day25').append(input[i])
       .append('<br>&emsp;')
-      .append()
+      .append(code)
       .append('<br>')
   }
 }

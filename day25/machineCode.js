@@ -73,12 +73,9 @@ var day25 = function() {
 }
 
 var day25part2 = function() {
-  for (var i = 0; i < input.length; i++) {
-    $('#day25part2').append(input[i])
-      .append('<br>&emsp;')
-      .append()
-      .append('<br>')
-  }
+  $('#day25part2')
+    .append('<br>&emsp;To complete Part 2 49 stars need to be earned')
+    .append('<br>')
 }
 
 $(function (){
